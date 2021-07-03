@@ -35,6 +35,8 @@ function setup() {
   addFood.position(800,95);
   addFood.mousePressed(addFoods);
 
+  getTime();
+  
 }
 
 function draw() {
@@ -45,7 +47,16 @@ function draw() {
   
   
   //write code to display text lastFed time here
-  
+  if(lastFeed>=12){
+    fill("white");
+    text("Last Feed : " + lastFeed +" PM", 350, 30);
+  }else if(lastFeed==0){
+    fill("white");
+    text("Last Feed : " + lastFeed +" AM", 350, 30);
+  }else if(lastFeed>=0){
+    fill("white");
+    text("Last Feed : " + lastFeed +" AM",350,30);
+  }
   
   drawSprites();
 }
@@ -65,12 +76,24 @@ function feedDog(){
   database.ref('/').update({
     Food:foodS
   })
+  getTime();
 }
 
 //function to add food in stock
 function addFoods(){
+  dog.addImage(sadDog);
   foodS++;
   database.ref('/').update({
     Food:foodS
   })
+}
+
+async function getTime(){
+  var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var responseJSON = await response.json();
+
+    var datetime = responseJSON.datetime;
+    lastFeed = datetime.slice(11,13);
+    console.log(lastFeed);
+    
 }
